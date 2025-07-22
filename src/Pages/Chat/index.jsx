@@ -1,7 +1,7 @@
 // src/Pages/Chat/index.jsx
 
 import { useState } from 'react';
-import { perguntarGemini } from '../../services/gemini';
+import { perguntarChatGPT } from '../../services/openai';
 
 function Chat() {
     const [mensagem, setMensagem] = useState('');
@@ -10,20 +10,23 @@ function Chat() {
     const enviarMensagem = async () => {
         if (!mensagem.trim()) return;
 
-        const respostaIA = await perguntarGemini(mensagem);
+        // Adiciona a mensagem do usuário ao chat
+        const novaMensagem = { tipo: 'usuário', texto: mensagem };
+        setRespostas((prev) => [...prev, novaMensagem]);
 
-        setRespostas((prev) => [
-            ...prev,
-            { tipo: 'usuário', texto: mensagem },
-            { tipo: 'ia', texto: respostaIA },
-        ]);
+        // Consulta a IA
+        const respostaIA = await perguntarChatGPT(mensagem);
+
+        // Adiciona a resposta da IA ao chat
+        const respostaMensagem = { tipo: 'ia', texto: respostaIA };
+        setRespostas((prev) => [...prev, respostaMensagem]);
 
         setMensagem('');
     };
 
     return (
         <div style={{ padding: '2rem' }}>
-            <h1>Chat com IA (Gemini)</h1>
+            <h1>Chat com ChatGPT</h1>
 
             <div
                 style={{
@@ -44,7 +47,8 @@ function Chat() {
                             color: msg.tipo === 'ia' ? '#333' : '#007bff',
                         }}
                     >
-                        <strong>{msg.tipo === 'ia' ? 'IA:' : 'Você:'}</strong> <br />
+                        <strong>{msg.tipo === 'ia' ? 'ChatGPT:' : 'Você:'}</strong>
+                        <br />
                         <span>{msg.texto}</span>
                     </div>
                 ))}

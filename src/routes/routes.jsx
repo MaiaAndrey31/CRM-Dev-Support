@@ -45,6 +45,7 @@ export { router };
 //         <Route path="/" element={<Home />} />
 //         <Route path="/painel" element={<Trophy />} />
 //         <Route path="/links" element={<Links />} />
+//         <Route path="/chat" element={<Chat />} />
 //       </Routes>
 //     </Router>
 //   );
